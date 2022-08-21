@@ -4,11 +4,17 @@ Repository of scripts that acquire resources from a REST endpoint
 # Inputs
 
 output - o - file to store result in - defaults to none
+
 nocache - nc - forces a rest call
+
 cache - c - cache directory - defaults to forced call and stores result in cwd if output provided
+
 time - t - age of cache file in mins to force call - defaults to 5 
+
 sleep - s -time to sleep in ms for the request - default 200
+
 rest - r - REST object - if not provided will return a 1
+
 * endpoint
 * params
 * header
