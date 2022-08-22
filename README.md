@@ -57,3 +57,5 @@ config = {
 }
 response = getRestData.execute(config)
 ```
+
+![Process Flow](https://github.com/samuelshiels/GetRESTData/blob/main/Get-Rest-Data.drawio.png "Process Flow")
