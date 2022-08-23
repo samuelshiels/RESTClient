@@ -1,5 +1,6 @@
 import getRestData
 import hashlib
+from RESTObject import RESTObject as ro
 
 print('Tests Starting')
 
@@ -37,13 +38,14 @@ def test1():
 
 #test false
 def test2():
-    restObj = {}
+    #restObj = {}
     config = {}
-    restObj['operation'] = 'get'
-    restObj['endpoint'] = 'https://api.scryfall.com/cards/named'
-    restObj['params'] = {'exact':'Overgrown Tomb'}
-    restObj['headers'] = {}
-    restObj['payload'] = {}
-    #config['rest'] = restObj
-    print(getRestData.execute(config))
+    #restObj['operation'] = 'get'
+    #restObj['endpoint'] = 'https://api.scryfall.com/cards/named'
+    #restObj['params'] = {'exact':'Overgrown Tomb'}
+    #restObj['headers'] = {}
+    #restObj['payload'] = {}
+    restObj = ro(operation='get', endpoint='https://api.scryfall.com/cards/named',params={'exact':'Overgrown Tomb'},headers={},payload={})
+    config['rest'] = restObj
+    getRestData.execute(config)
 test2()

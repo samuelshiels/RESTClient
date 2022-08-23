@@ -59,11 +59,11 @@ def __readCache(file, path=os.getcwd(), age=5):
 def __executeCall(restObj, sleep):
     time.sleep(sleep / 1000)
     try:
-        operation = restObj['operation'] or 'get'
-        endpoint = restObj['endpoint']
-        params = restObj['params'] or None
-        payload = restObj['payload'] or None
-        headers = restObj['headers'] or None
+        operation = restObj.operation 
+        endpoint = restObj.endpoint
+        params = restObj.params
+        payload = restObj.payload
+        headers = restObj.headers
         if operation == 'get':
             response = requests.get(
                 endpoint,
@@ -91,19 +91,6 @@ def __writeCache(file, content, path=os.getcwd()):
             'errorDescription':str(e)
         }
 
-def __validateRest(rest):
-    if type(rest) is not dict:
-        return False
-    if 'payload' not in rest:
-        rest['payload'] = ''
-    if 'headers' not in rest:
-        rest['headers'] = ''
-    if 'params' not in rest:
-        rest['params'] = {}
-    if 'operation' not in rest:
-        rest['operation'] = 'get'
-    return rest
-
 def __validateConfig(config):
     if 'no_cache' not in config:
         config['no_cache'] = False
@@ -117,11 +104,6 @@ def __validateConfig(config):
         config['sleep'] = 200
     if 'rest' not in config:
         return False
-    rest = __validateRest(config['rest'])
-    if not rest:
-        return False
-    else:
-        config['rest'] = rest
     return config
 
 def execute(config):
@@ -160,3 +142,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
