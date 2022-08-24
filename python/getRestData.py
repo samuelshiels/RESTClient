@@ -66,8 +66,10 @@ def __executeCall(restObj, sleep):
         headers = restObj.headers
         if operation == 'get':
             response = requests.get(
-                endpoint,
-                params
+                url=endpoint,
+                params=params,
+                headers=headers,
+                data=payload
             )
             return response.text
     except Exception as e:
@@ -142,4 +144,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
