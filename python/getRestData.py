@@ -3,6 +3,21 @@ import time
 import requests
 import argparse
 import Cache
+import LogHelper as log
+import LinuxHelper as lh
+
+appName = 'getRestData'
+logFileName = 'getRestData.log'
+logFilePath = os.path.join(lh.getHomeDirectory(), lh.getCacheDirectory(), appName)
+logging = False
+
+def debug(content):
+	global logging, logFileName, logFilePath
+	#print(logging, logFileName, logFilePath)
+	if not logging:
+		return
+	log.writeLog(logFileName, logFilePath, log.formatLog(content))
+	
 
 def __init_argparse() -> argparse.ArgumentParser:
 	parser = argparse.ArgumentParser(
@@ -40,8 +55,8 @@ def __readCache(file, path=os.getcwd(), age=5):
 			'time': age,
 			'dump': True
 		}
-		#returns {'valid':bool,'content':content}
 		output = Cache.readCache(config)
+		debug(['Reading Cache', path, file, age, output['valid'], output['fileAge'], output['content'][:100]])
 		if output['valid']:
 			return output['content'][0]
 		return False
@@ -60,6 +75,7 @@ def __executeCall(restObj, sleep):
 		payload = restObj.payload
 		headers = restObj.headers
 		if operation == 'get':
+			debug(['Running REST Call', operation, endpoint, params, headers, str(payload)[:100]])
 			response = requests.get(
 				url=endpoint,
 				params=params,
@@ -85,6 +101,7 @@ def __writeCache(file, content, path=os.getcwd()):
 			}
 		#returns {'valid':bool,'content':content}
 		output = Cache.writeCache(config)
+		debug(['Writing Cache', path, file, output['valid'], output['content'][:100]])
 	except Exception as e:
 		return {
 			'errorCode':'WriteFile',
@@ -106,7 +123,7 @@ def __validateConfig(config):
 		return False
 	return config
 
-def retrieveFile(url, cache, fileName, age):
+def retrieveFile(url, cache, fileName, age, log=False):
 	"""Retrieves the file from the given url and writes it to the provided cache and filename under the conditions the cache is not older than the age"""
 	if not __readCache(fileName, cache, age):
 		# print(f'retrieving file from {url} into {cache}/{fileName}')
@@ -115,7 +132,9 @@ def retrieveFile(url, cache, fileName, age):
 		# urllib.request.urlretrieve(url, f'{cache}/{fileName}')
 	return f'{cache}/{fileName}'
 
-def execute(config):
+def execute(config, log=False):
+	global logging
+	logging = log
 	config = __validateConfig(config)
 	if not config:
 		return False
