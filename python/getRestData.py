@@ -12,12 +12,16 @@ logFilePath = os.path.join(lh.getHomeDirectory(), lh.getCacheDirectory(), appNam
 logging = False
 
 def debug(content):
-	global logging, logFileName, logFilePath
-	#print(logging, logFileName, logFilePath)
 	if not logging:
 		return
-	log.writeLog(logFileName, logFilePath, log.formatLog(content))
-	
+	log.writeLog(logFileName, logFilePath, log.formatLog(str(content)))
+
+
+def getShortString(content):
+	if str(content).__len__() < 110:
+		return content
+	else:
+		return f"{str(content)[:100]}...{str(content)[-10:]}"
 
 def __init_argparse() -> argparse.ArgumentParser:
 	parser = argparse.ArgumentParser(
@@ -56,7 +60,7 @@ def __readCache(file, path=os.getcwd(), age=5):
 			'dump': True
 		}
 		output = Cache.readCache(config)
-		debug(['Reading Cache', path, file, age, output['valid'], output['fileAge'], output['content'][:100]])
+		debug(['Reading Cache', path, file, age, output['valid'], output['fileAge'], getShortString(output['content'])])
 		if output['valid']:
 			return output['content'][0]
 		return False
@@ -75,7 +79,7 @@ def __executeCall(restObj, sleep):
 		payload = restObj.payload
 		headers = restObj.headers
 		if operation == 'get':
-			debug(['Running REST Call', operation, endpoint, params, headers, str(payload)[:100]])
+			debug(['Running REST Call', operation, endpoint, params, headers, getShortString(payload)])
 			response = requests.get(
 				url=endpoint,
 				params=params,
@@ -101,7 +105,7 @@ def __writeCache(file, content, path=os.getcwd()):
 			}
 		#returns {'valid':bool,'content':content}
 		output = Cache.writeCache(config)
-		debug(['Writing Cache', path, file, output['valid'], output['content'][:100]])
+		debug(['Writing Cache', path, file, output['valid'], getShortString(output['content'])])
 	except Exception as e:
 		return {
 			'errorCode':'WriteFile',
@@ -141,7 +145,7 @@ def execute(config, log=False):
 	runCall = False
 	returnJSON = False
 	#003 - Check Cache
-	if config['output'] is not None:
+	if config['output'] is not None and config['no_cache'] is not True:
 		#004 - Read File
 		returnJSON = __readCache(config['output'], config['cache'] or os.getcwd(), config['time'])
 	#005 - Rest Call
