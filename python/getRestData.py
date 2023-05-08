@@ -71,7 +71,10 @@ def __readCache(file, path=os.getcwd(), age=5):
 		} 
 
 def __executeCall(restObj, sleep):
-	time.sleep(sleep / 1000)
+	sleep_time = sleep / 1000
+	debug(f'Starting Sleep for {sleep_time}s {time.time()}')
+	time.sleep(sleep_time)
+	debug(f'Finished for {sleep_time}s {time.time()}')
 	try:
 		operation = restObj.operation 
 		endpoint = restObj.endpoint
