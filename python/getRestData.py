@@ -2,13 +2,15 @@ import os
 import time
 import requests
 import argparse
+from pathlib import Path
+
 import Cache
 import LogHelper as log
-import LinuxHelper as lh
+from RESTObject import RESTObject
 
 appName = 'getRestData'
 logFileName = 'getRestData.log'
-logFilePath = os.path.join(lh.getHomeDirectory(), lh.getCacheDirectory(), appName)
+logFilePath = os.path.join(str(Path.home()), '.cache', appName)
 logging = False
 
 def debug(content):
@@ -70,7 +72,7 @@ def __readCache(file, path=os.getcwd(), age=5):
 			'errorDescription':str(e)
 		} 
 
-def __executeCall(restObj, sleep):
+def __executeCall(restObj: RESTObject, sleep: int) -> str | dict:
 	sleep_time = sleep / 1000
 	debug(f'Starting Sleep for {sleep_time}s {time.time()}')
 	time.sleep(sleep_time)
