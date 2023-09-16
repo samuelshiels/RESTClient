@@ -1,5 +1,7 @@
 import getRestData
 import hashlib
+import os
+import pathlib
 from RESTObject import RESTObject as ro
 
 print('Tests Starting')
@@ -73,5 +75,5 @@ def test3():
 	print(getRestData.execute(config, True)[:300])
 
 test1()
-test2()
-test3()
+#test2()
+#test3()

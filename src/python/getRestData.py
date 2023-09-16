@@ -4,14 +4,31 @@ import requests
 import argparse
 from pathlib import Path
 
-import Cache
+from diskcache import Cache as C
+cache = C()
 import LogHelper as log
 from RESTObject import RESTObject
 
-appName = 'getRestData'
-logFileName = 'getRestData.log'
-logFilePath = os.path.join(str(Path.home()), '.cache', appName)
-logging = False
+
+
+ae = {}
+ae['app_name'] = appName = 'getRestData'
+ae['version'] = '0.1.0'
+ae['root_dir'] = os.path.join(
+str(Path.home()), ".config/", ae['app_name'])
+ae['cache_dir'] = cache_dir = ''
+ae['log_file'] = logFileName = 'getRestData.log'
+ae['log_file_dir'] = logFilePath = os.path.join(str(Path.home()), '.cache', appName)
+ae['debug'] = False
+
+import logging
+logging.basicConfig(
+format='%(asctime)s | %(levelname)s | %(message)s', level=logging.DEBUG)
+debug = True
+def __debugMessage(message):
+	global debug
+	if debug:
+		logging.debug(str(message))
 
 def debug(content):
 	if not logging:
@@ -54,18 +71,7 @@ def __init_argparse() -> argparse.ArgumentParser:
 	
 def __readCache(file, path=os.getcwd(), age=5):
 	try:
-		config = {
-			'home': False,
-			'cache': path,
-			'file': file,
-			'time': age,
-			'dump': True
-		}
-		output = Cache.readCache(config)
-		debug(['Reading Cache', path, file, age, output['valid'], output['fileAge'], getShortString(output['content'])])
-		if output['valid']:
-			return output['content'][0]
-		return False
+		return cache.get(file, default=False)
 	except Exception as e:
 		return {
 			'errorCode':'ReadFile',
@@ -100,6 +106,9 @@ def __executeCall(restObj: RESTObject, sleep: int) -> str | dict:
 
 def __writeCache(file, content, path=os.getcwd()):
 	try:
+		key, value = file, content
+		__debugMessage(f'Setting key {key} {value} {0}')
+		return C.set(key, value, expire=None)
 		config = {
 				'home': False,
 				'cache': path,
@@ -116,7 +125,7 @@ def __writeCache(file, content, path=os.getcwd()):
 			'errorCode':'WriteFile',
 			'errorDescription':str(e)
 		}
-
+	
 def __validateConfig(config):
 	if 'no_cache' not in config:
 		config['no_cache'] = False
@@ -142,11 +151,18 @@ def retrieveFile(url, cache, fileName, age, log=False):
 	return f'{cache}/{fileName}'
 
 def execute(config, log=False):
-	global logging
-	logging = log
+	global debug
+	debug = log
+
 	config = __validateConfig(config)
+
+	global cache_dir, cache
+	cache_dir = config['cache']
+	cache = C(cache_dir)
+
 	if not config:
 		return False
+	
 	runCall = False
 	returnJSON = False
 	#003 - Check Cache

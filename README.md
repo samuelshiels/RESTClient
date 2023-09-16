@@ -3,29 +3,28 @@ Repository of scripts that acquire resources from a REST endpoint
 
 # Inputs
 
-output - o - file to store result in - defaults to none
-
-no-cache - nc - forces a rest call - defaults to false
-
-cache - c - cache directory - defaults to forced call and stores result in cwd if output provided
-
-time - t - age of cache file in mins to force call - defaults to 5 
-
-sleep - s -time to sleep in ms for the request - default 200
-
-rest - r - REST object - if not provided will return a False
-
-* operation
-* endpoint
-* params
-* header
-* payload
+```
+options:
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+  -o OUTPUT, --output OUTPUT
+                        file to store result in - defaults to none
+  -c CACHE, --cache CACHE
+                        cache directory - defaults to forced call and stores result in cwd if output provided
+  -t TIME, --time TIME  age of cache file in mins to force call - defaults to 5
+  -s SLEEP, --sleep SLEEP
+                        time to sleep in ms for the request - default 200
+  -nc, --no-cache       force a rest call
+  -r REST, --rest REST  REST object - if not provided will return an error object
+```
 
 e.g
 
 runs a Magic the Gathering card search against the exact name 'Overgrown Tomb' and stores the result in a cache file 'dfb86d6f05e9f54e9dde11f6ad052660.json', which is the md5 version of the name, in the cache/ directory the program is run from, this file will be used, since -nc was not given, if the file is less than 15days old. The program will wait 200ms before returning the result
 
+```bash
 program -o "dfb86d6f05e9f54e9dde11f6ad052660" -c "cache/cards" -t 21600 -s 200 -r "{'operation':'get','endpoint':'https://api.scryfall.com/cards/named','params':{'exact':'Overgrown Tomb'},'headers':{},'payload':{}}"
+```
 
 the program will return the json string representation of the result of the command or an Error object:
 
