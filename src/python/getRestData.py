@@ -36,7 +36,7 @@ def debug(content):
 	log.writeLog(logFileName, logFilePath, log.formatLog(str(content)))
 
 
-def getShortString(content):
+def get_short_string(content):
 	if str(content).__len__() < 110:
 		return content
 	else:
@@ -80,9 +80,9 @@ def __readCache(file, path=os.getcwd(), age=5):
 
 def __executeCall(restObj: RESTObject, sleep: int) -> str | dict:
 	sleep_time = sleep / 1000
-	debug(f'Starting Sleep for {sleep_time}s {time.time()}')
+	__debugMessage(f'Starting Sleep for {sleep_time}s {time.time()}')
 	time.sleep(sleep_time)
-	debug(f'Finished for {sleep_time}s {time.time()}')
+	__debugMessage(f'Finished for {sleep_time}s {time.time()}')
 	try:
 		operation = restObj.operation 
 		endpoint = restObj.endpoint
@@ -90,7 +90,7 @@ def __executeCall(restObj: RESTObject, sleep: int) -> str | dict:
 		payload = restObj.payload
 		headers = restObj.headers
 		if operation == 'get':
-			debug(['Running REST Call', operation, endpoint, params, headers, getShortString(payload)])
+			__debugMessage(['Running REST Call', operation, endpoint, params, headers, get_short_string(payload)])
 			response = requests.get(
 				url=endpoint,
 				params=params,
@@ -109,17 +109,6 @@ def __writeCache(file, content, path=os.getcwd()):
 		key, value = file, content
 		__debugMessage(f'Setting key {key} {value} {0}')
 		return C.set(key, value, expire=None)
-		config = {
-				'home': False,
-				'cache': path,
-				'file': file,
-				'time': 0,
-				'dump': True,
-				'write':content
-			}
-		#returns {'valid':bool,'content':content}
-		output = Cache.writeCache(config)
-		debug(['Writing Cache', path, file, output['valid'], getShortString(output['content'])])
 	except Exception as e:
 		return {
 			'errorCode':'WriteFile',
