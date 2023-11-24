@@ -128,7 +128,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-cache/
-data/
-
 main.py
+_main_*.py
+
+*.code-workspace
+.vscode/
+cache/
