@@ -42,7 +42,7 @@ class RESTClient():
         else:
             return f"{str(content)[:100]}...{str(content)[-10:]}"
 
-    def _execute_call(self, rest_object: RO) -> str | dict:
+    def _execute_call(self, rest_object: RO) -> dict:
         sleep_time = self.sleep_ms / 1000
         self._debug(f'Starting Sleep for {sleep_time}s {time.time()}')
         time.sleep(sleep_time)
@@ -63,7 +63,10 @@ class RESTClient():
                     data=payload,
                     timeout=10
                 )
-                return response.text
+                return {
+                    'error': False,
+                    'response': response.text,
+                }
             return {
                 'error': True,
                 'description': 'Operation not valid',
@@ -83,8 +86,11 @@ class RESTClient():
     def _set_cache(self, config: RO) -> None:
         pass
 
-    def execute(self, config: RO) -> str | dict | bool:
+    def execute(self, config: RO) -> dict | bool:
         if not config:
-            return False
+            return {
+                'error': True,
+                'description': 'No config provided'
+            }
 
         return self._execute_call(config)

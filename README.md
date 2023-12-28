@@ -20,14 +20,23 @@ runs a Magic the Gathering card search against the exact name 'Overgrown Tomb'.
 
 Returns the content of the response
 
-```json
-{"object":"card","id":"eff1f52c-5c43-4260-aaa0-6920846a191c","oracle_id":"975ec9a3-6f20-4177-8211-82526e092538","multiverse_ids":[453003],"mtgo_id":69919,"arena_id":68734,"tcgplayer_id":175196,"cardmarket_id":363554,"name":"Overgrown Tomb",.....ll"}}
+```python
+{
+    'error': False,
+    'response':"{\"object\":\"card\",\"id\":\"eff1f52c-5c43-4260-aaa0-6920846a191c\",\"oracle_id\":\"975ec9a3-6f20-4177-8211-82526e092538\",\"multiverse_ids\":[453003],\"mtgo_id\":69919,\"arena_id\":68734,\"tcgplayer_id\":175196,\"cardmarket_id\":363554,\"name\":\"Overgrown Tomb\",.....ll\"}}"
+}
 ```
 Or an object describing an error
-```json
-{"error":True,"description":"Resource not found"}
-# or
-{"error":True,"description":"Unterminated string starting at: line 1 column 14 (char 13)"}
+```python
+{
+    "error":True,
+    "description":"Resource not found"
+    }
+or
+{
+    "error":True,
+    "description":"Unterminated string starting at: line 1 column 14 (char 13)"
+}
 ```
 
 # Build
