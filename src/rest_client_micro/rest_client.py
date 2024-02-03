@@ -8,6 +8,7 @@ import time
 import requests
 
 from .rest_object import RESTObject as RO
+from .response import Response as R
 
 
 class RESTClient():
@@ -42,7 +43,7 @@ class RESTClient():
         else:
             return f"{str(content)[:100]}...{str(content)[-10:]}"
 
-    def _execute_call(self, rest_object: RO) -> dict:
+    def _execute_call(self, rest_object: RO) -> R:
         sleep_time = self.sleep_ms / 1000
         self._debug(f'Starting Sleep for {sleep_time}s {time.time()}')
         time.sleep(sleep_time)
@@ -63,19 +64,22 @@ class RESTClient():
                     data=payload,
                     timeout=10
                 )
-                return {
-                    'error': False,
-                    'response': response.text,
-                }
-            return {
-                'error': True,
-                'description': 'Operation not valid',
-            }
+                return R(
+                    error=False,
+                    response=response.text,
+                    status=response.status_code
+                )
+            return R(
+                error=True,
+                error_text='REST Operation not supported or valid',
+
+            )
+
         except Exception as e:
-            return {
-                'error': True,
-                'description': str(e),
-            }
+            return R(
+                error=True,
+                error_text=str(e),
+            )
 
     def _read_cache(self, config: RO) -> str:
         pass
@@ -86,11 +90,11 @@ class RESTClient():
     def _set_cache(self, config: RO) -> None:
         pass
 
-    def execute(self, config: RO) -> dict | bool:
+    def execute(self, config: RO = False) -> R:
         if not config:
-            return {
-                'error': True,
-                'description': 'No config provided'
-            }
+            return R(
+                error=True,
+                error_text='RESTObject config not provided'
+            )
 
         return self._execute_call(config)
