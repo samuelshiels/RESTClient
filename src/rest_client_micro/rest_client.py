@@ -43,7 +43,7 @@ class RESTClient():
         else:
             return f"{str(content)[:100]}...{str(content)[-10:]}"
 
-    def _execute_call(self, rest_object: RO) -> R:
+    def _execute_call(self, rest_object: RO,return_outbound=False) -> R:
         sleep_time = self.sleep_ms / 1000
         self._debug(f'Starting Sleep for {sleep_time}s {time.time()}')
         time.sleep(sleep_time)
@@ -67,7 +67,8 @@ class RESTClient():
                 return R(
                     error=False,
                     response=response.text,
-                    status=response.status_code
+                    status=response.status_code,
+                    outbound=payload
                 )
             return R(
                 error=True,
@@ -90,11 +91,11 @@ class RESTClient():
     def _set_cache(self, config: RO) -> None:
         pass
 
-    def execute(self, config: RO = False) -> R:
+    def execute(self, config: RO = False, return_outbound=False) -> R:
         if not config:
             return R(
                 error=True,
                 error_text='RESTObject config not provided'
             )
 
-        return self._execute_call(config)
+        return self._execute_call(config,return_outbound=return_outbound)
