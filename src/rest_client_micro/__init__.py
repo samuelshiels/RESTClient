@@ -2,7 +2,7 @@
 Run REST calls
 """
 
-from response import Response
+from .response import Response
 
 VERSION = (0, 3, 2)
 
