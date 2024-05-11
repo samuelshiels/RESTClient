@@ -11,6 +11,7 @@ from requests.auth import AuthBase
 from requests.auth import HTTPBasicAuth
 from .rest_object import RESTObject as RO
 from .response import Response as R
+from ._utils import file_not_old
 
 
 class RESTClient():
@@ -177,7 +178,8 @@ class RESTClient():
         result = self._execute_call(config)
         if result.error is not False:
             return result
-        self._overwrite_file(file_name, result.response)
+        if not file_not_old(file_name, self.cache_s):
+            self._overwrite_file(file_name, result.response)
         return result
 
     def execute(self, config: RO = False, return_outbound=False) -> R:
