@@ -175,10 +175,10 @@ class RESTClient():
         """
         self._debug("retrieve_file " + config.endpoint + " - " + file_name)
         config.operation = "file"
-        result = self._execute_call(config)
-        if result.error is not False:
-            return result
         if not file_not_old(file_name, self.cache_s):
+            result = self._execute_call(config)
+            if result.error is not False:
+                return result
             self._overwrite_file(file_name, result.response)
         return result
 
