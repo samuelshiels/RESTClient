@@ -161,7 +161,7 @@ class RESTClient():
             print(f'caught {type(e)}: {e}')
             return False
 
-    def retrieve_file(self, file_name: str, config: RO = False, return_outbound=False) -> R:
+    def retrieve_file(self, file_name: str, config: RO = False, return_outbound=False):
         """Runs a HTTP get call against a file endpoint and saves the file
 
         Args:
@@ -174,13 +174,11 @@ class RESTClient():
             R: Response object, use `error` property to check if call was successful
         """
         self._debug("retrieve_file " + config.endpoint + " - " + file_name)
-        config.operation = "file"
         if not file_not_old(file_name, self.cache_s):
+            config.operation = "file"
             result = self._execute_call(config)
-            if result.error is not False:
-                return result
-            self._overwrite_file(file_name, result.response)
-        return result
+            if result.error is False:
+                self._overwrite_file(file_name, result.response)
 
     def execute(self, config: RO = False, return_outbound=False) -> R:
         """Runs a rest call with the provided RestObject
