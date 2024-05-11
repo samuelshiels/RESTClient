@@ -2,11 +2,11 @@ import os
 import time
 
 
-def file_not_old(file, age_minutes=5):
+def file_not_old(file, age_seconds=5):
     try:
         if file_exists(file):
             file_age_mtime = _get_time(time.time()) - _get_time(file_age(file))
-            if file_age_mtime / 60 > age_minutes:
+            if file_age_mtime > age_seconds:
                 return False
             else:
                 return True
