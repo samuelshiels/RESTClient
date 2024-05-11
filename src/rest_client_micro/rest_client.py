@@ -94,6 +94,33 @@ class RESTClient():
                         status=response.status_code,
                         outbound=payload
                     )
+            if operation == 'file':
+                self._debug(f"Running REST Call {operation} {endpoint} {
+                            params} {headers} {self._get_short_string(payload)}")
+                response = requests.get(
+                    url=endpoint,
+                    params=params,
+                    headers=headers,
+                    data=payload,
+                    timeout=10,
+                    auth=auth
+                )
+                if response.status_code in rest_object.error_status:
+                    return R(
+                        endpoint=endpoint,
+                        error=True,
+                        response=response.content,
+                        status=response.status_code,
+                        outbound=payload
+                    )
+                else:
+                    return R(
+                        endpoint=endpoint,
+                        error=False,
+                        response=response.content,
+                        status=response.status_code,
+                        outbound=payload
+                    )
             return R(
                 endpoint=endpoint,
                 error=True,
@@ -116,6 +143,42 @@ class RESTClient():
 
     def _set_cache(self, config: RO) -> None:
         pass
+
+    def _overwrite_file(self, file_name, content):
+        """Uses a filepath + filename string and content string overwrites the resulting file"""
+        try:
+            write_file = file_name
+            if os.path.dirname(write_file) != '':
+                os.makedirs(os.path.dirname(write_file), exist_ok=True)
+            if str(type(content)) == "<class 'bytes'>":
+                mode = 'wb'
+            else:
+                mode = 'w'
+            with open(write_file, mode) as f:
+                f.write(content)
+        except Exception as e:
+            print(f'caught {type(e)}: {e}')
+            return False
+
+    def retrieve_file(self, file_name: str, config: RO = False, return_outbound=False) -> R:
+        """Runs a HTTP get call against a file endpoint and saves the file
+
+        Args:
+            config (RO, optional): RestObject to determine the REST call, 
+            if not provided will return an error Response. Defaults to False.
+            return_outbound (bool, optional): Returns the outbound call, otherwise 
+            will only return the result of the rest call. Defaults to False.
+
+        Returns:
+            R: Response object, use `error` property to check if call was successful
+        """
+        self._debug("retrieve_file " + config.endpoint + " - " + file_name)
+        config.operation = "file"
+        result = self._execute_call(config)
+        if result.error is not False:
+            return result
+        self._overwrite_file(file_name, result.response)
+        return result
 
     def execute(self, config: RO = False, return_outbound=False) -> R:
         """Runs a rest call with the provided RestObject
