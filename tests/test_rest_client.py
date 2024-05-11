@@ -13,7 +13,7 @@ def test_client():
     rest_object.endpoint = 'http://localhost:3876/'
     rest_object.params = ''
     rest_client = rc()
-    rc.debug = True
+    rc.DEBUG = True
     result = rest_client.execute(config=rest_object)
     assert result.status is 200
     assert result.error is False

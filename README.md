@@ -1,10 +1,12 @@
 # RestClientMicro
+
 Run REST calls
 
 # Usage
+
 ```python
-from rest_client_micro.rest_client import RESTClient as rc
-from rest_client_micro.rest_object import RESTObject as ro
+from rest_client_micro import RESTClient as rc
+from rest_client_micro import RESTObject as ro
 
 rest_object = ro()
 rest_object.endpoint = 'https://api.scryfall.com/cards/named'
@@ -26,7 +28,9 @@ Returns the content of the response
     'response':"{\"object\":\"card\",\"id\":\"eff1f52c-5c43-4260-aaa0-6920846a191c\",\"oracle_id\":\"975ec9a3-6f20-4177-8211-82526e092538\",\"multiverse_ids\":[453003],\"mtgo_id\":69919,\"arena_id\":68734,\"tcgplayer_id\":175196,\"cardmarket_id\":363554,\"name\":\"Overgrown Tomb\",.....ll\"}}"
 }
 ```
+
 Or an object describing an error
+
 ```python
 {
     "error":True,
@@ -37,6 +41,19 @@ or
     "error":True,
     "description":"Unterminated string starting at: line 1 column 14 (char 13)"
 }
+```
+
+## Auth
+
+```python
+from rest_client_micro import RESTClient as rc, RESTObject as ro, BasicAuth as ba
+
+rest_object = ro()
+rest_object.endpoint = 'http://localhost:3876/auth'
+rest_object.params = ''
+rest_object.basic_auth = ba('user', 'secretpass')
+rest_client = rc()
+result = rest_client.execute(config=rest_object)
 ```
 
 # Build
