@@ -80,6 +80,7 @@ class RESTClient():
                 )
                 if response.status_code in rest_object.error_status:
                     return R(
+                        endpoint=endpoint,
                         error=True,
                         response=response.text,
                         status=response.status_code,
@@ -87,12 +88,14 @@ class RESTClient():
                     )
                 else:
                     return R(
+                        endpoint=endpoint,
                         error=False,
                         response=response.text,
                         status=response.status_code,
                         outbound=payload
                     )
             return R(
+                endpoint=endpoint,
                 error=True,
                 error_text='REST Operation not supported or valid',
 
@@ -100,6 +103,7 @@ class RESTClient():
 
         except Exception as e:
             return R(
+                endpoint=endpoint,
                 error=True,
                 error_text=str(e),
             )
@@ -127,6 +131,7 @@ class RESTClient():
         """
         if not config:
             return R(
+                endpoint="",
                 error=True,
                 error_text='RESTObject config not provided'
             )
