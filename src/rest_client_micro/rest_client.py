@@ -95,6 +95,33 @@ class RESTClient():
                         status=response.status_code,
                         outbound=payload
                     )
+            if operation == 'post':
+                self._debug(f"Running REST Call {operation} {endpoint} {
+                            params} {headers} {self._get_short_string(payload)}")
+                response = requests.get(
+                    url=endpoint,
+                    params=params,
+                    headers=headers,
+                    data=payload,
+                    timeout=10,
+                    auth=auth
+                )
+                if response.status_code in rest_object.error_status:
+                    return R(
+                        endpoint=endpoint,
+                        error=True,
+                        response=response.content,
+                        status=response.status_code,
+                        outbound=payload
+                    )
+                else:
+                    return R(
+                        endpoint=endpoint,
+                        error=False,
+                        response=response.content,
+                        status=response.status_code,
+                        outbound=payload
+                    )
             if operation == 'file':
                 self._debug(f"Running REST Call {operation} {endpoint} {
                             params} {headers} {self._get_short_string(payload)}")
