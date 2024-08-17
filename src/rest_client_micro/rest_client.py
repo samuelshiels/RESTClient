@@ -98,7 +98,7 @@ class RESTClient():
             if operation == 'post':
                 self._debug(f"Running REST Call {operation} {endpoint} {
                             params} {headers} {self._get_short_string(payload)}")
-                response = requests.get(
+                response = requests.post(
                     url=endpoint,
                     params=params,
                     headers=headers,
