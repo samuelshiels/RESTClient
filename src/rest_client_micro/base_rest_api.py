@@ -97,6 +97,7 @@ class BaseRESTAPI():
 
     def _run_rest(self, e: str, p: dict, o: str, c) -> R:
         rc = RC()
+        rc.sleep_ms = self.sleep_ms
         rest_obj = RO(operation='get', endpoint=f'{self.root_endpoint}{e}',
                       params=p, headers=self._build_header_obj(), payload={})
         rest_obj.basic_auth = self.auth
