@@ -1,5 +1,5 @@
 
-import logging
+# import logging
 import os
 
 from pathlib import Path
@@ -28,8 +28,8 @@ class BaseRESTAPI():
     force_cache: bool
     cache_timeout_mins: int
 
-    logging.basicConfig(
-        format='%(asctime)s | %(levelname)s | %(message)s', level=logging.DEBUG)
+    # logging.basicConfig(
+    #     format='%(asctime)s | %(levelname)s | %(message)s', level=logging.DEBUG)
 
     def __init__(self,
                  app_name: str,
