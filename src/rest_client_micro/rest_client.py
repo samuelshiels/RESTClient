@@ -19,8 +19,8 @@ class RESTClient():
     Wrapper class for requests calls
     """
 
-    logging.basicConfig(
-        format='%(asctime)s | %(levelname)s | %(message)s', level=logging.DEBUG)
+    # logging.basicConfig(
+        # format='%(asctime)s | %(levelname)s | %(message)s', level=logging.DEBUG)
     __app_name = 'rest_client_micro'
     root_dir: str
     output_file: str

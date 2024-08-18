@@ -5,7 +5,7 @@ requires = [
 build-backend = "hatchling.build"
 [project]
 name = "rest_client_micro"
-version = "0.3.17"
+version = "0.3.18"
 authors = [
   { name = "Samuel Shiels" },
 ]
