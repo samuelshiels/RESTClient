@@ -1,5 +1,36 @@
 """
-Run REST calls
+Wrapper for python requests
+
+Invoke manually via:
+
+```python
+from rest_client_micro import RESTClient as rc
+from rest_client_micro import RESTObject as ro
+
+rest_object = ro()
+rest_object.endpoint = 'https://api.example.com/'
+rest_object.params = {'key':'value'}
+rest_client = rc()
+result = rest_client.execute(rest_object)
+
+if result.error is False:
+    `print(result.response)
+else:
+    `print(result.description)
+```
+
+Or create an extended class
+
+```python
+    class YourAPIClient(BaseRESTAPI):
+        ...
+        def your_function(self):
+            endpoint = "url/path"
+            params = {"key":"value"}
+            operation = "get"
+            self._run_call(endpoint, params, operation, None)
+
+```
 """
 
 from .response import Response

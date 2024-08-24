@@ -14,6 +14,21 @@ from .basic_auth import BasicAuth as BA
 
 
 class BaseRESTAPI():
+    """
+    Used as a skeleton for writing a REST client, provides functions to run REST calls
+    and cache results if necessary
+
+    ```python
+    class YourAPIClient(BaseRESTAPI):
+        ...
+        def your_function(self):
+            endpoint = "url/path"
+            params = {"key":"value"}
+            operation = "get"
+            self._run_call(endpoint, params, operation, None)
+
+    ```
+    """
 
     app_name: str
 
@@ -44,17 +59,23 @@ class BaseRESTAPI():
                  use_cache: bool = True) -> None:
         """Initialise a BaseRESTAPI instance
 
-        :app_name: Alters location and path for client calls
+        :app_name: Alters location and paths
         :param root_endpoint: Root url to run commands against,
             all calls will append a path to this
-        :param user_agent: Literal string to represent user agent in header
+        :param user_agent: Literal string to represent `User-Agent` in header
+            (default '')
         :param sleep_ms: milliseconds between REST calls
             (default 1100 ms)
-        :param config_dir: Directory to store/use configuration
+        :param basic_auth: Auth object to use
+            (default None)
+        :param config_dir: Directory to store/read configuration
+            (default $XDG_HOME/.config/<app_name>)
         :param cache_dir: Directory to store cached data
+            (default $XDG_HOME/.cache/<app_name>)
         :param cache_refresh_mins: Duration to store cache data
-            (default 10800 minutes)
-        :param force_cache: Bypass cached data and force a rest call
+            (default 10_800 minutes)
+        :param force_cache: Bypass reading cached data event if present
+            and force a rest call
             (default False)
         :param use_cache: Store and read results from cache
             (default True)
@@ -62,8 +83,11 @@ class BaseRESTAPI():
         self.app_name = app_name
 
         self.root_endpoint = root_endpoint
-        self.user_agent = user_agent
-        self.sleep_ms = sleep_ms
+
+        self.user_agent = ''
+        if user_agent is not None:
+            self.user_agent = str(user_agent)
+        self.sleep_ms = int(sleep_ms)
         self.auth = basic_auth
 
         self.config_dir = config_dir or os.path.join(
@@ -79,12 +103,25 @@ class BaseRESTAPI():
 
     def _build_header_obj(self) -> dict:
         headers = {}
-        headers['User-Agent'] = self.user_agent
+        if self.user_agent != '':
+            headers['User-Agent'] = self.user_agent
         # we want responses in json, because fuck xml
         headers['Accept'] = 'application/json'
         return headers
 
     def _run_get(self, e: str, p: dict, o: str, c) -> R:
+        """DEPRECATED"""
+        if self.force_cache:
+            return self._run_rest(e, p, o, c)
+
+        if self.use_cache:
+            cache_result = self.cache.get(o)
+            if cache_result is not None:
+                return cache_result
+            else:
+                return self._run_rest(e, p, o, c)
+
+    def _run_call(self, e: str, p: dict, o: str, c) -> R:
         if self.force_cache:
             return self._run_rest(e, p, o, c)
 
