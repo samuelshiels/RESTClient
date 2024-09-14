@@ -109,34 +109,34 @@ class BaseRESTAPI():
         headers['Accept'] = 'application/json'
         return headers
 
-    def _run_get(self, e: str, p: dict, o: str, c) -> R:
+    def _run_get(self, e: str, p: dict, o: str, c, payload: str = '') -> R:
         """DEPRECATED"""
         if self.force_cache:
-            return self._run_rest(e, p, o, c)
+            return self._run_rest(e, p, o, c, payload)
 
         if self.use_cache:
             cache_result = self.cache.get(o)
             if cache_result is not None:
                 return cache_result
             else:
-                return self._run_rest(e, p, o, c)
+                return self._run_rest(e, p, o, c, payload)
 
-    def _run_call(self, e: str, p: dict, o: str, c) -> R:
+    def _run_call(self, e: str, p: dict, o: str, c, payload: str = '') -> R:
         if self.force_cache:
-            return self._run_rest(e, p, o, c)
+            return self._run_rest(e, p, o, c, payload)
 
         if self.use_cache:
             cache_result = self.cache.get(o)
             if cache_result is not None:
                 return cache_result
             else:
-                return self._run_rest(e, p, o, c)
+                return self._run_rest(e, p, o, c, payload)
 
-    def _run_rest(self, e: str, p: dict, o: str, c) -> R:
+    def _run_rest(self, e: str, p: dict, o: str, c, payload: str = '') -> R:
         rc = RC()
         rc.sleep_ms = self.sleep_ms
         rest_obj = RO(operation=o, endpoint=f'{self.root_endpoint}{e}',
-                      params=p, headers=self._build_header_obj(), payload={})
+                      params=p, headers=self._build_header_obj(), payload=payload)
         rest_obj.basic_auth = self.auth
         response = rc.execute(rest_obj)
         if self.use_cache:
