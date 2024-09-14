@@ -20,4 +20,5 @@ classifiers = [
 dependencies = [
   "diskcache>=5.6.3",
   "jsonpickle>=3.0.2",
+  "requests>=2.31.0"
 ]
