@@ -126,7 +126,7 @@ class BaseRESTAPI():
             return self._run_rest(e, p, o, c, payload)
 
         if self.use_cache:
-            cache_result = self.cache.get(o)
+            cache_result = self.cache.get(c)
             if cache_result is not None:
                 return cache_result
             else:
@@ -140,7 +140,7 @@ class BaseRESTAPI():
         rest_obj.basic_auth = self.auth
         response = rc.execute(rest_obj)
         if self.use_cache:
-            self._set_cache(o, response)
+            self._set_cache(c, response)
 
         return response
 
